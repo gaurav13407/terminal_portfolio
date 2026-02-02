@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import { commands } from "../engine/commands"
 import RightPanel from "./RightPanel"
 import type { TerminalLine } from "../engine/terminalTypes"
@@ -15,10 +15,13 @@ export default function Terminal() {
   const [output, setOutput] = useState<(string | TerminalLine)[]>([])
   const [lineIndex, setLineIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
-
+  const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [input, setInput] = useState("")
   const [introDone, setIntroDone] = useState(false)
   const [showPrompt, setShowPrompt] = useState(false)
+  const historyRef = useRef<string[]>([])
+  const historyIndexRef = useRef<number | null>(null)
+  const inputRef = useRef("")
 
   // Check if current input is a valid command
   const isValidCommand = () => {
@@ -75,29 +78,90 @@ export default function Terminal() {
   /* =============================
      KEYBOARD INPUT HANDLER
   ============================== */
-  useEffect(() => {
-    if (!showPrompt) return
+ useEffect(()=>{
+     historyRef.current=commandHistory
+ },[commandHistory])
+ 
+ useEffect(() => {
+     inputRef.current = input
+ }, [input])
+ 
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        /*---------------Command History---------------------*/ 
+         
+        if(e.key === "ArrowUp"){
+            e.preventDefault()
+            const history=historyRef.current
+            if(history.length === 0) return
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+            const nextIndex=
+                historyIndexRef.current === null 
+                    ? history.length-1 
+                    : Math.max(historyIndexRef.current - 1, 0)
+            
+            historyIndexRef.current = nextIndex
+            const newInput = history[nextIndex]
+            inputRef.current = newInput
+            setInput(newInput)
+            
+            return 
+        }
+
+        if(e.key === "ArrowDown"){
+            e.preventDefault()
+            const history=historyRef.current
+            if(history.length === 0) return 
+
+            if(historyIndexRef.current === null) return 
+
+            const nextIndex = historyIndexRef.current + 1 
+            if(nextIndex >= history.length){
+                historyIndexRef.current = null
+                inputRef.current = ""
+                setInput("")
+                return
+            }
+            historyIndexRef.current = nextIndex
+            const newInput = history[nextIndex]
+            inputRef.current = newInput
+            setInput(newInput)
+            return 
+        }
+
+        /*-------------------Backspace-----------------------------*/
       if (e.key === "Backspace") {
-        setInput(prev => prev.slice(0, -1))
+        const newInput = inputRef.current.slice(0, -1)
+        inputRef.current = newInput
+        setInput(newInput)
+        return 
       } 
+      /*---------------------------Enter-------------------------------*/
       else if (e.key === "Enter") {
-        const trimmed = input.trim()
+        const trimmed = inputRef.current.trim()
 
         // Handle clear command separately - preserve intro lines
         if (trimmed === "clear") {
           setOutput(prev => prev.slice(0, 6))
+          inputRef.current = ""
           setInput("")
           return
         }
+
 
         setOutput(prev => {
           const next: (string | TerminalLine)[] = [
             ...prev,
             { text: `gaurav@portfolio:~$ ${trimmed}`, type: "normal" },
           ]
-
+             
+            if (trimmed.length > 0) {
+            setCommandHistory(prev => {
+                const next=[...prev,trimmed]
+                historyRef.current=next 
+                return next
+            })
+            historyIndexRef.current=null 
+            }
           if (trimmed.length === 0) return next
 
           const cmd = commands.find(c => c.name === trimmed)
@@ -113,16 +177,23 @@ export default function Terminal() {
           ]
         })
 
+        inputRef.current = ""
         setInput("")
       } 
       else if (e.key.length === 1) {
-        setInput(prev => prev + e.key)
+        historyIndexRef.current=null 
+        const newInput = inputRef.current + e.key
+        inputRef.current = newInput
+        setInput(newInput)
       }
-    }
+    }, [])
+ 
+  useEffect(() => {
+    if (!showPrompt) return
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [input, showPrompt])
+  }, [showPrompt, handleKeyDown])
 
   /* =============================
      RENDER
