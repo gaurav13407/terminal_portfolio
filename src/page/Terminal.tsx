@@ -22,6 +22,7 @@ export default function Terminal() {
   const historyRef = useRef<string[]>([])
   const historyIndexRef = useRef<number | null>(null)
   const inputRef = useRef("")
+  const bottomRef=useRef<HTMLDivElement | null>(null)
 
   // Check if current input is a valid command
   const isValidCommand = () => {
@@ -74,6 +75,10 @@ export default function Terminal() {
       setShowPrompt(true)
     }
   }, [introDone])
+
+  useEffect(()=>{
+      bottomRef.current?.scrollIntoView({behavior:"smooth"})
+  },[output])
 
   /* =============================
      KEYBOARD INPUT HANDLER
@@ -253,6 +258,7 @@ export default function Terminal() {
                 </div>
               )
             })}
+            <div ref={bottomRef} />
           </div>
         )}
         
