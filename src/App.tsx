@@ -1,5 +1,10 @@
 import Terminal from "./page/Terminal"
 
 export default function App(){
-    return <Terminal />
+    console.log("App component rendering")
+    return (
+        <div style={{ background: "black", minHeight: "100vh", width: "100vw" }}>
+            <Terminal />
+        </div>
+    )
 }

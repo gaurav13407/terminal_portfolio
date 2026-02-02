@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { commands } from "../engine/commands"
 import RightPanel from "./RightPanel"
+import type { TerminalLine } from "../engine/terminalTypes"
 
 const introLines = [
   "Welcome 👋",
@@ -11,13 +12,20 @@ const introLines = [
 ]
 
 export default function Terminal() {
-  const [output, setOutput] = useState<string[]>([])
+  const [output, setOutput] = useState<(string | TerminalLine)[]>([])
   const [lineIndex, setLineIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
 
   const [input, setInput] = useState("")
   const [introDone, setIntroDone] = useState(false)
   const [showPrompt, setShowPrompt] = useState(false)
+
+  // Check if current input is a valid command
+  const isValidCommand = () => {
+    const trimmed = input.trim()
+    if (trimmed === "clear") return true
+    return trimmed && commands.some(c => c.name === trimmed)
+  }
 
   /* =============================
      INTRO TYPING EFFECT
@@ -77,10 +85,17 @@ export default function Terminal() {
       else if (e.key === "Enter") {
         const trimmed = input.trim()
 
+        // Handle clear command separately
+        if (trimmed === "clear") {
+          setOutput([])
+          setInput("")
+          return
+        }
+
         setOutput(prev => {
-          const next = [
+          const next: (string | TerminalLine)[] = [
             ...prev,
-            `gaurav@portfolio:~$ ${trimmed}`,
+            { text: `gaurav@portfolio:~$ ${trimmed}`, type: "normal" },
           ]
 
           if (trimmed.length === 0) return next
@@ -93,8 +108,8 @@ export default function Terminal() {
 
           return [
             ...next,
-            `command not found: ${trimmed}`,
-            "Type `help` to see available commands.",
+            { text: `command not found: ${trimmed}`, type: "error" },
+            { text: "Type 'help' to see available commands.", type: "normal" },
           ]
         })
 
@@ -122,11 +137,14 @@ export default function Terminal() {
           <div className="md:col-span-2">
             {/* Intro section - matches right panel height */}
             <div className="space-y-2 md:min-h-[450px]">
-              {output.slice(0, 6).map((line, idx) => (
-                <div key={idx} className="text-green-400">
-                  {line}
-                </div>
-              ))}
+              {output.slice(0, 6).map((line, idx) => {
+                const textContent = typeof line === "string" ? line : line.text
+                return (
+                  <div key={idx} className="text-green-400">
+                    {textContent}
+                  </div>
+                )
+              })}
             </div>
           </div>
 
@@ -142,11 +160,28 @@ export default function Terminal() {
         {/* Command output section - appears BELOW grid after intro */}
         {introDone && (
           <div className="mt-6 space-y-2">
-            {output.slice(6).map((line, idx) => (
-              <div key={idx} className="text-green-400">
-                {line}
-              </div>
-            ))}
+            {output.slice(6).map((line, idx) => {
+              if (typeof line === "string") {
+                return (
+                  <div key={idx} className="text-green-400">
+                    {line}
+                  </div>
+                )
+              }
+              
+              const colorClass =
+                line.type === "error"
+                  ? "text-red-400"
+                  : line.type === "success"
+                  ? "text-green-400"
+                  : "text-gray-300"
+              
+              return (
+                <div key={idx} className={colorClass}>
+                  {line.text}
+                </div>
+              )
+            })}
           </div>
         )}
         
@@ -155,8 +190,12 @@ export default function Terminal() {
           <div className="flex mt-2">
             <span className="text-green-500">gaurav@portfolio</span>
             <span className="text-green-300">:~$</span>
-            <span className="ml-2">{input}</span>
-            <span className="ml-1 animate-pulse">█</span>
+            <span className={`ml-2 ${
+              input.trim() ? (isValidCommand() ? "text-green-400" : "text-red-400") : "text-gray-300"
+            }`}>
+              {input}
+            </span>
+            <span className="ml-1 animate-pulse text-green-400">█</span>
           </div>
         )}
         
