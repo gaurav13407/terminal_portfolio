@@ -5,7 +5,7 @@ import RightPanel from "./RightPanel"
 const introLines = [
   "Welcome 👋",
   "This is an interactive terminal-style portfolio.",
-  "You don’t need to be technical to use it.",
+  "You don't need to be technical to use it.",
   "",
   "👉 Type `help` and press Enter to get started.",
 ]
@@ -112,43 +112,55 @@ export default function Terminal() {
   /* =============================
      RENDER
   ============================== */
-return (
-  <div className="min-h-screen w-screen bg-black text-green-400 font-mono">
-    <div className="p-6">
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  return (
+    <div className="min-h-screen w-screen bg-black text-green-400 font-mono">
+      <div className="p-6">
         
-        {/* LEFT: terminal output + prompt (always together) */}
-        <div className="md:col-span-2 space-y-2">
-          {/* All output lines */}
-          {output.map((line, idx) => (
-            <div key={idx} className="text-green-400">
-              {line}
-            </div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Active prompt - stays at bottom of output */}
-          {showPrompt && (
-            <div className="flex">
-              <span className="text-green-500">gaurav@portfolio</span>
-              <span className="text-green-300">:~$</span>
-              <span className="ml-2">{input}</span>
-              <span className="ml-1 animate-pulse">█</span>
+          {/* LEFT: intro section (always visible) */}
+          <div className="md:col-span-2">
+            {/* Intro section - matches right panel height */}
+            <div className="space-y-2 md:min-h-[450px]">
+              {output.slice(0, 6).map((line, idx) => (
+                <div key={idx} className="text-green-400">
+                  {line}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT: persistent about panel */}
+          {introDone && (
+            <div className="hidden md:block">
+              <RightPanel />
             </div>
           )}
-        </div>
 
-        {/* RIGHT: persistent about panel */}
+        </div>
+        
+        {/* Command output section - appears BELOW grid after intro */}
         {introDone && (
-          <div className="hidden md:block">
-            <RightPanel />
+          <div className="mt-6 space-y-2">
+            {output.slice(6).map((line, idx) => (
+              <div key={idx} className="text-green-400">
+                {line}
+              </div>
+            ))}
           </div>
         )}
-
+        
+        {/* Active prompt - appears below everything */}
+        {showPrompt && (
+          <div className="flex mt-2">
+            <span className="text-green-500">gaurav@portfolio</span>
+            <span className="text-green-300">:~$</span>
+            <span className="ml-2">{input}</span>
+            <span className="ml-1 animate-pulse">█</span>
+          </div>
+        )}
+        
       </div>
-      
     </div>
-  </div>
-) 
+  )
 }
-
