@@ -85,9 +85,9 @@ export default function Terminal() {
       else if (e.key === "Enter") {
         const trimmed = input.trim()
 
-        // Handle clear command separately
+        // Handle clear command separately - preserve intro lines
         if (trimmed === "clear") {
-          setOutput([])
+          setOutput(prev => prev.slice(0, 6))
           setInput("")
           return
         }
