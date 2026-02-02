@@ -1,75 +1,182 @@
-# React + TypeScript + Vite
+🖥️ Terminal-Style Interactive Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive, terminal-inspired personal portfolio built with React + TypeScript, designed to mimic the behavior and feel of a real Linux terminal.
+Instead of traditional pages, buttons, or navigation bars, users explore the portfolio by typing commands — just like in a real shell.
 
-Currently, two official plugins are available:
+A persistent About sidebar provides context at all times, inspired by terminal system info panels (neofetch-style), making the experience intuitive even for non-technical users.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✨ Features
+🔹 Core Experience
 
-## React Compiler
+Single-screen terminal UI (no routing, no pages)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Character-by-character intro typing for an authentic boot-up feel
 
-## Expanding the ESLint configuration
+Keyboard-driven input (no <input> or form elements)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Command-based navigation (help, about, whoami, neofetch, etc.)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Persistent About panel displayed alongside the terminal after intro completion
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Non-technical friendly guidance (Type help to get started)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🔹 Terminal Behavior
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Realistic prompt (gaurav@portfolio:~$)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Command execution and output history
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# terminal_portfolio
-# terminal_portfolio
+Friendly error handling for unknown commands
+
+Clean spacing and scrolling similar to real terminals
+
+Output rendered line-by-line (terminal-style stdout)
+
+🔹 System-Inspired UI
+
+About panel inspired by real terminal system summaries
+
+Optional dynamic ASCII output for system-style commands
+
+Responsive layout (sidebar hidden on small screens)
+
+🧠 Design Philosophy
+
+Most portfolios follow a predictable structure: landing page → sections → links.
+This project intentionally breaks that pattern.
+
+The goal is to:
+
+Reflect real developer workflows
+
+Emphasize architecture and interaction design
+
+Create a memorable experience without sacrificing clarity
+
+Special care is taken to ensure:
+
+Non-technical users are not confused
+
+Technical users feel “at home”
+
+UI logic and command logic remain cleanly separated
+
+🏗️ Architecture Overview
+src/
+├── page/
+│   ├── Terminal.tsx      # Main terminal UI & input handling
+│   └── RightPanel.tsx    # Persistent About sidebar
+│
+├── engine/
+│   ├── commands.ts       # Command registry (help, about, neofetch, etc.)
+│   └── ascii.ts          # ASCII variants for dynamic commands
+│
+├── App.tsx
+└── main.tsx
+
+Key Principles
+
+Separation of concerns
+
+UI rendering ≠ command logic
+
+State-driven terminal
+
+Output history stored as data
+
+Extensible command engine
+
+New commands can be added without touching UI code
+
+🛠️ Tech Stack
+
+React
+
+TypeScript
+
+Tailwind CSS
+
+Vite
+
+No backend (pure frontend logic)
+
+🚀 Getting Started
+Prerequisites
+
+Node.js (v18+ recommended)
+
+npm
+
+Installation
+git clone https://github.com/your-username/terminal-portfolio.git
+cd terminal-portfolio
+npm install
+npm run dev
+
+
+Open the browser at:
+
+http://localhost:5173
+
+🧪 How to Use
+
+Open the site
+
+Wait for the intro to finish typing
+
+Follow the instruction shown on screen
+
+Type:
+
+help
+
+
+Explore available commands through the terminal
+
+📌 Available Commands
+Command	Description
+help	Show all available commands
+about	Simple introduction (also shown in sidebar)
+whoami	Alias for about
+neofetch	Dynamic system-style view
+clear	Clear terminal output (left panel only)
+
+(More commands can be added easily via commands.ts)
+
+🎯 Why This Project Stands Out
+
+No page routing or fake terminal emulation
+
+No UI libraries for typing or input tricks
+
+Keyboard-first interaction
+
+Realistic terminal mental model
+
+Clean, readable, scalable codebase
+
+This project demonstrates systems-oriented thinking, not just frontend styling.
+
+🔮 Future Improvements
+
+Command history (↑ / ↓)
+
+Auto-scroll behavior
+
+Autocomplete / suggestions
+
+Theme switching
+
+Session persistence
+
+Mobile-optimized terminal input
+
+📜 License
+
+MIT License — feel free to fork, adapt, and experiment.
+
+👋 Author
+
+Gaurav Joshi
+Software Engineer | Systems, AI & Quant-focused
+Inspired by real Linux terminal workflows
