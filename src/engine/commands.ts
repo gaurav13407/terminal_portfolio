@@ -63,6 +63,7 @@ export const commands: Command[] = [
       { text: "about       -> About me (simple)", type: "normal" },
       { text: "whoami      -> Same as about", type: "normal" },
       { text: "neofetch    -> System-style view (dynamic)", type: "normal" },
+      { text: "fetch       -> Fetch profile data", type: "normal" },
       { text: "clear       -> Clear the terminal", type: "normal" },
       { text: "", type: "normal" },
       { text: "Tip: Type a command and press Enter.", type: "success" },
@@ -82,6 +83,13 @@ export const commands: Command[] = [
     name: "neofetch",
     description: "System-style information",
     run: neofetchCommand,
+  },
+  {
+    name: "fetch",
+    description: "Fetch profile data",
+    run: (): TerminalLine[] => [
+      { text: "Fetching profile data...", type: "normal" },
+    ],
   },
 ]
 

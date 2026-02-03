@@ -255,10 +255,22 @@ if (e.key === "Tab") {
             historyIndexRef.current=null 
             }
           if (trimmed.length === 0) return next
-
+             
           const cmd = commands.find(c => c.name === trimmed)
 
           if (cmd) {
+            // Special handling for fetch command with delayed output
+            if (trimmed === "fetch") {
+              setTimeout(() => {
+                setOutput(prev => [
+                  ...prev,
+                  { text: "✔ Name       : Gaurav Joshi", type: "success" },
+                  { text: "✔ Focus      : Systems • AI • Quant", type: "success" },
+                  { text: "✔ Projects   : 5", type: "success" },
+                  { text: "✔ Status     : Actively building", type: "success" },
+                ])
+              }, 1200)
+            }
             return [...next, ...cmd.run()]
           }
 
