@@ -119,6 +119,54 @@ export default function Terminal() {
 
           return 
       }
+
+        
+/*---------------------TAB COMPLETION--------------------*/
+if (e.key === "Tab") {
+  e.preventDefault()
+
+  const current = inputRef.current.trim()
+  const commandNames = commands.map(c => c.name)
+
+  // If nothing typed → list all commands
+  if (!current) {
+    setOutput(prev => [
+      ...prev,
+      {
+        text: commandNames.join("  "),
+        type: "success",
+      },
+    ])
+    return
+  }
+
+  const matches = commandNames.filter(cmd =>
+    cmd.startsWith(current)
+  )
+
+  // No matches → do nothing
+  if (matches.length === 0) return
+
+  // Single match → autocomplete
+  if (matches.length === 1) {
+    const newInput = matches[0]
+    inputRef.current = newInput
+    historyIndexRef.current = null
+    setInput(newInput)
+    return
+  }
+
+  // Multiple matches → show suggestions
+  setOutput(prev => [
+    ...prev,
+    {
+      text: matches.join("  "),
+      type: "success",
+    },
+  ])
+
+  return
+}
         /*---------------Command History---------------------*/ 
          
         if(e.key === "ArrowUp"){
