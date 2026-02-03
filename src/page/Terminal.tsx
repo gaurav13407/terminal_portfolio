@@ -11,6 +11,18 @@ const introLines = [
   "👉 Type `help` and press Enter to get started.",
 ]
 
+function getCommandSuggestions(input: string, commands: string[]) {
+  if (!input) return []
+
+  const lower = input.toLowerCase()
+
+  return commands.filter(cmd =>
+    cmd.startsWith(lower[0]) || cmd.includes(lower)
+  )
+}
+
+
+
 export default function Terminal() {
   const [output, setOutput] = useState<(string | TerminalLine)[]>([])
   const [lineIndex, setLineIndex] = useState(0)
@@ -250,10 +262,27 @@ if (e.key === "Tab") {
             return [...next, ...cmd.run()]
           }
 
+          const commandNames=commands.map(c =>c.name)
+          const suggestions=getCommandSuggestions(trimmed,commandNames)
+
           return [
             ...next,
-            { text: `command not found: ${trimmed}`, type: "error" },
-            { text: "Type 'help' to see available commands.", type: "normal" },
+            { text: `command not found: ${trimmed}`, type: "error" as const },
+            ...(suggestions.length >0)
+            ?[
+                {
+                    text:
+                        suggestions.length === 1 
+                        ? `Did you mean: ${suggestions[0]}?`
+                        : `Did you mean :${suggestions.join(",")}?`,
+                        type:"success" as const,
+                },
+            ]
+            :[
+                {
+             text: "Type 'help' to see available commands.", type: "normal" as const 
+                },
+            ]
           ]
         })
 
