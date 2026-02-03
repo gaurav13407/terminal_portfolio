@@ -92,6 +92,33 @@ export default function Terminal() {
  }, [input])
  
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+
+      /*---------------------CTRL + C--------------------*/ 
+      if(e.ctrlKey && e.key === "c"){
+          e.preventDefault()
+
+          //print ^C 
+          setOutput(prev =>[
+              ...prev,
+              {text:"^C",type:"error"},
+          ])
+
+          setInput("")
+          historyIndexRef.current=null 
+          return
+      }
+
+      /*---------------------CTRL+L------------------------------*/
+      if(e.ctrlKey && e.key === "l"){
+          e.preventDefault() 
+
+          setOutput(prev=>prev.slice(0,6))
+          inputRef.current=""
+          historyIndexRef.current=null 
+          setInput("")
+
+          return 
+      }
         /*---------------Command History---------------------*/ 
          
         if(e.key === "ArrowUp"){
