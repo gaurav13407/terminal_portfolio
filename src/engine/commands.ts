@@ -1,4 +1,3 @@
-import { getRandomAscii } from "./ascii"
 import type { TerminalLine } from "./terminalTypes"
 
 /* =============================
