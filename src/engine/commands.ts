@@ -103,6 +103,44 @@ export const contactCommand = (): TerminalLine[] => [
 ]
 
 /* =============================
+   SKILLS COMMAND
+============================= */
+export const skillsCommand = (): TerminalLine[] => [
+  { text: "💻 TECHNICAL SKILLS", type: "success" },
+  { text: "", type: "normal" },
+  { text: "Languages:", type: "success" },
+  { text: "  • C", type: "normal" },
+  { text: "  • C++", type: "normal" },
+  { text: "  • Rust", type: "normal" },
+  { text: "  • Python", type: "normal" },
+  { text: "  • TypeScript", type: "normal" },
+  { text: "", type: "normal" },
+  { text: "Systems & Low-Level:", type: "success" },
+  { text: "  • Memory management", type: "normal" },
+  { text: "  • Data layout & performance", type: "normal" },
+  { text: "  • Event-driven systems", type: "normal" },
+  { text: "  • Networking fundamentals", type: "normal" },
+  { text: "  • Concurrency basics", type: "normal" },
+  { text: "", type: "normal" },
+  { text: "AI / ML:", type: "success" },
+  { text: "  • Traditional ML pipelines", type: "normal" },
+  { text: "  • Neural network fundamentals", type: "normal" },
+  { text: "  • NLP basics", type: "normal" },
+  { text: "  • Model evaluation & experimentation", type: "normal" },
+  { text: "", type: "normal" },
+  { text: "Tools & Environment:", type: "success" },
+  { text: "  • Linux (daily driver)", type: "normal" },
+  { text: "  • Git & GitHub", type: "normal" },
+  { text: "  • Neovim", type: "normal" },
+  { text: "  • CLI-first workflows", type: "normal" },
+  { text: "", type: "normal" },
+  { text: "Currently Learning:", type: "success" },
+  { text: "  • Quantitative finance", type: "normal" },
+  { text: "  • Advanced systems design", type: "normal" },
+  { text: "  • Performance optimization techniques", type: "normal" },
+]
+
+/* =============================
    COMMAND REGISTRY
 ============================= */
 export const commands: Command[] = [
@@ -116,6 +154,7 @@ export const commands: Command[] = [
       { text: "about       -> About me (simple)", type: "normal" },
       { text: "whoami      -> Same as about", type: "normal" },
       { text: "projects    -> Show my current projects", type: "normal" },
+      { text: "skills      -> Technical skills & expertise", type: "normal" },
       { text: "contact     -> Contact information", type: "normal" },
       { text: "neofetch    -> System-style view (dynamic)", type: "normal" },
       { text: "fetch       -> Fetch profile data", type: "normal" },
@@ -138,6 +177,11 @@ export const commands: Command[] = [
     name: "projects",
     description: "Show my current projects",
     run: projectsCommand,
+  },
+  {
+    name: "skills",
+    description: "Technical skills & expertise",
+    run: skillsCommand,
   },
   {
     name: "contact",
